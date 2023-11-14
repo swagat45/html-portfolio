@@ -1,0 +1,83 @@
+#include <iostream>
+#include <vector>
+
+class Matrix {
+private:
+    std::vector<std::vector<int>> data;
+    int rows;
+    int cols;
+
+public:
+    Matrix(int rows, int cols) : rows(rows), cols(cols), data(rows, std::vector<int>(cols, 0)) {}
+
+    // Overload the addition operator
+    Matrix operator+(const Matrix& other) const {
+        Matrix result(rows, cols);
+        for (int i = 0; i < rows; ++i) {
+            for (int j = 0; j < cols; ++j) {
+                result.data[i][j] = data[i][j] + other.data[i][j];
+            }
+        }
+        return result;
+    }
+
+    // Overload the multiplication operator
+    Matrix operator*(const Matrix& other) const {
+        if (cols != other.rows) {
+            // Multiplication not possible
+            std::cerr << "Error: Incompatible matrix dimensions for multiplication.\n";
+            return Matrix(0, 0);
+        }
+
+        Matrix result(rows, other.cols);
+        for (int i = 0; i < rows; ++i) {
+            for (int j = 0; j < other.cols; ++j) {
+                for (int k = 0; k < cols; ++k) {
+                    result.data[i][j] += data[i][k] * other.data[k][j];
+                }
+            }
+        }
+        return result;
+    }
+
+    // Overload the equality operator
+    bool operator==(const Matrix& other) const {
+        return (rows == other.rows && cols == other.cols && data == other.data);
+    }
+
+    // Display the matrix
+    void display() const {
+        for (int i = 0; i < rows; ++i) {
+            for (int j = 0; j < cols; ++j) {
+                std::cout << data[i][j] << " ";
+            }
+            std::cout << '\n';
+        }
+    }
+};
+
+int main() {
+    // Example usage
+    Matrix matrix1(2, 3);
+    matrix1.display();
+
+    Matrix matrix2(3, 2);
+    matrix2.display();
+
+    Matrix result = matrix1 * matrix2;
+    std::cout << "Result of multiplication:\n";
+    result.display();
+
+    Matrix sum = matrix1 + matrix2;
+    std::cout << "Result of addition:\n";
+    sum.display();
+
+    // Example of matrix comparison
+    if (matrix1 == matrix2) {
+        std::cout << "Matrices are equal.\n";
+    } else {
+        std::cout << "Matrices are not equal.\n";
+    }
+
+    return 0;
+}
